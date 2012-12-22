@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Log In | metisME</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="job board">
+
+    <link rel="stylesheet" href="http://localhost:3000/stylesheets/bootstrap.css">
+    <link rel="stylesheet" href="http://localhost:3000/stylesheets/bootstrap-responsive.css">
+
+    <style type="text/css">
+      .container {
+        width: 300px;
+        padding: 60px 0 0;
+      }
+    </style>
+    <script type="text/javascript" src = "http://localhost:3000/javascripts/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript" src = "http://localhost:3000/javascripts/bootstrap.js"></script>
+</head>
+<body>
+  <div class="container">
+      <div class="well">
+          <h1>Login</h1>
+          <% if(error) { %> <p class="error"><%= error %></p><%}%>
+          <form action="/login" method="post">
+            <div class="control-group">
+              <input type="text" placeholder="Username/Email" name="username">
+            </div>
+            <div class="control-group">
+              <input type="password" placeholder="Password" name="password">
+            </div>
+            <div class="control-group">
+              <button class="btn btn-primary" type="submit">Log In</button>
+            </div>
+            <div class="control-group">
+              <a href="/signup">New to MetisME? Sign Up here</a>
+            </div>
+          </form>
+      </div>
+  </div> <!-- /container -->
+</body>
+</html>

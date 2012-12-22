@@ -1,0 +1,35 @@
+<% include header.ejs %>
+    <div class="container-fluid">
+    <% if(error) { %> <p class="error"><%= error %></p><%}%>
+      <% if(!profile) { %>
+      	<p>Welcome to Metis ME. Login or Sign up to follow interesting people and talk to them.</p>
+      <% } else { %>
+
+      <div class="row-fluid">
+      
+      <div class="span3">
+          
+      </div><!--/span3-->
+        
+      <div class="span9">  	  			
+		<% if(comments && comments.length > 0) { %>
+		<% comments.forEach(function(comment){ %>
+			<div class="target-row">
+		        <div class="target-header">
+		          <a href="/profile/<%= comment.username %>"><strong><%= comment.username %></strong></a> . posted . <%= comment.addedat %>
+		        </div>
+		        <div class="target">
+		          <p> <%= comment.comment %> </p>
+		        </div>
+		    </div>
+	    <% }) %> <!-- for close -->
+		<% } else { %> 
+		<p> No message posted yet by any of your followers! </p>
+		<% } %> <!-- if-else close -->   
+      </div><!--/span9-->
+    
+    </div><!--/row-->
+
+    <% } %>
+    </div> <!-- /container -->
+<% include footer.ejs %>

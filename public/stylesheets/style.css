@@ -1,0 +1,88 @@
+body{
+	padding-top: 80px;
+	color: #878787;
+	background-color: #F0F0F0;
+	background-image: url('../images/background.png');
+}
+
+ol,ul{
+	list-style: none;
+}
+
+.profile-name {
+    color: #333333;
+    font-size: 20px;
+    margin-left: 50%;
+    margin-top: 5%;
+    text-transform: uppercase;
+}
+
+.follow-btn-fix{
+	margin-top: 5%;
+	margin-left: 50%;
+}
+
+.mb0{
+	margin-bottom: 0px;
+}
+
+.target-row{
+	border: 1px solid #D7D7D7;
+  	padding: 15px 20px;
+  	background-color: #FFFFFF;
+}
+
+.target-row:first-child{
+	border-radius: 5px 5px 0 0;
+	border-top: 1px solid #D7D7D7;
+}
+
+.target-header strong {
+	color: #333333;
+	font-size: 16px;
+	text-transform: uppercase;
+}
+
+.target {
+	padding: 5px 0px;
+}
+
+.target p {
+	margin: 0px;
+}
+
+.target-social {
+	padding-bottom: 5px;
+}
+
+.target-comment textarea {
+	margin: 10px 0px 10px;
+	width: 98%
+}
+
+.comments-ul{
+	margin-top:0px;
+	margin-bottom: 0px;
+}
+
+.comments-li{
+	border-top: 1px solid #D7D7D7;
+}
+
+.comments-content{
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.comments-content strong{
+	color: #333333;
+	text-transform: lowercase;
+}
+
+.comments-image{
+	float: left;
+    height: 35px;
+    margin-right: 5px;
+    margin-top: 5px;
+    width: 35px;
+}
