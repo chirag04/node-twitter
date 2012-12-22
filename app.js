@@ -75,6 +75,25 @@ app.get('/',function(req, res){
   }
 });
 
+app.get('/people', function(req, res){
+  pg.connect(conString, function(err, client) {
+    if(err){
+      console.log(err);
+      res.render('people.ejs',{"error" : "Unable to connect to database"});
+    } else {
+      var query = "SELECT username FROM users";
+      client.query(query, function(err,result){
+        if(err){
+          console.log(err);
+          res.render('people.ejs',{"error" : "Error occoured while querying the database"});
+        }else {
+            res.render('people.ejs',{"error":null,"people":result.rows});
+        }
+      });
+    }
+  });
+});
+
 app.get('/profile', function(req, res){
   if(req.session && req.session.profile) {
     res.redirect('/profile/'+req.session.profile.username);

@@ -1,0 +1,24 @@
+<% include header.ejs %>
+
+  <div class="container-fluid">
+  <% if(error) { %> <p class="error"><%= error %></p><%}%>
+    <div class="row-fluid">
+      <div class="span3">
+         <h3 style="float:right;">Registered Users</h3>
+      </div><!--/span3-->
+        
+      <div class="span9">  	  			
+			<% if(people && people.length > 0) { %>
+        <table class="table table-bordered"><tbody>
+          <% people.forEach(function(people){ %>
+				    <tr><td><a href="/profile/<%= people.username %>"><%= people.username %></a></td></tr>
+	        <% }) %> <!-- for close -->
+        </tbody></table>
+			<% } else { %> 
+			   <p> No one signed up yet! </p>
+			<% } %> <!-- if-else close -->   
+      </div><!--/span9-->
+    </div><!--/row-->
+  </div><!--/.fluid-container-->
+  
+<% include footer.ejs %>
