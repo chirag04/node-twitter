@@ -9,7 +9,6 @@
     "express": "*",
     "ejs": "*",
     "pg":"*",
-    "pwd":"*",
     "moment":"*"
   },
   "engines": {

@@ -5,7 +5,6 @@
 
 var express = require('express')
   , pg = require('pg')
-  , hash = require('pwd').hash 
   , http = require('http')
   , path = require('path')
   , moment = require('moment');
@@ -217,11 +216,7 @@ app.post('/login',function(req, res){
           res.redirect('/login');
         }else {
           if(result.rowCount == 1) {
-            hash(req.body.password, result.rows[0].salt, function(err, hash){
-              if (err) {
-                req.session.error = "Error occoured while hashing";
-                res.redirect('/login');
-              } else if (hash == result.rows[0].password) {
+            if (req.body.password == result.rows[0].password) {
                 req.session.regenerate(function(){
                   var profile = {"userid":result.rows[0].userid,
                                  "username":result.rows[0].username
@@ -229,11 +224,10 @@ app.post('/login',function(req, res){
                   req.session.profile = profile;
                   res.redirect('/');
                 });
-              } else {
+            } else {
                 req.session.error = "Invalid password";
                 res.redirect('/login');  
-              }
-            });
+            }
           } else {
             req.session.error = "Invalid username/email";
             res.redirect('/login');
@@ -264,26 +258,19 @@ app.post('/signup',function(req, res){
             req.session.error = "Username/email is already in use";
             res.redirect('/signup');
           } else {
-            hash(req.body.password, function(err, salt, hash){
-              if (err) {
-                req.session.error = "Error occoured while hashing";
+            var query = "INSERT INTO users(username,password,salt,email) VALUES($1,$2,$3,$4) RETURNING userid";
+            client.query(query,[req.body.username,req.body.password,"salt",req.body.email],function(err,result){
+              if(err){
+                console.log(err);
+                req.session.error = "Error occoured while querying the database";
                 res.redirect('/signup');
-              } else {
-                var query = "INSERT INTO users(username,password,salt,email) VALUES($1,$2,$3,$4) RETURNING userid";
-                client.query(query,[req.body.username,hash,salt,req.body.email],function(err,result){
-                  if(err){
-                    console.log(err);
-                    req.session.error = "Error occoured while querying the database";
-                    res.redirect('/signup');
-                  }else {
-                    req.session.regenerate(function(){
-                      var profile = {"userid":result.rows[0].userid,
-                                     "username":req.body.username
-                                    };
-                      req.session.profile = profile;
-                      res.redirect('/');
-                    });
-                  }
+              }else {
+                req.session.regenerate(function(){
+                  var profile = {"userid":result.rows[0].userid,
+                                 "username":req.body.username
+                                };
+                  req.session.profile = profile;
+                  res.redirect('/');
                 });
               }
             });
