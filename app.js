@@ -11,7 +11,11 @@ var express = require('express')
 
 var app = express();
 
+/* heroku config */
 var conString = process.env.DATABASE_URL;
+
+/* local config */
+//var conString = "tcp://chirag:chirag@localhost/metisme";
 
 app.configure(function(){
   app.set('port', process.env.PORT || 5000);
@@ -54,7 +58,7 @@ app.get('/',function(req, res){
       var query = "SELECT * FROM comments"+
                     " left join users on comments.userid = users.userid"+
                     " left join followers on comments.userid = followers.userid"+
-                    " WHERE followerid ='" + req.session.profile.userid + "'";
+                    " WHERE followerid ='" + req.session.profile.userid + "' ORDER by addedat desc";
       client.query(query, function(err,result){
         if(err){
           console.log(err);
@@ -94,7 +98,7 @@ app.get('/profile/:id',function(req, res){
           if(result.rowCount == 1) {
             var query = "SELECT * FROM comments"+
                     " left join users on comments.userid = users.userid"+
-                    " WHERE username='" + req.params.id + "'";
+                    " WHERE username='" + req.params.id + "' ORDER by addedat desc";
             client.query(query, function(err,result){
               if(err){
                 console.log(err);
@@ -162,6 +166,25 @@ app.post('/follow',restrict,function(req,res){
     } else {
       var query = "insert into followers select '" + req.session.profile.userid + "',userid from users where username = '" + req.body.username + "'";
       client.query(query, function(err, result) {
+        if(err){
+          console.log(err);
+          res.json({"error":"error occured while querying the database"});
+        } else {
+          res.json({"success":"1"});
+        }
+      });
+    }
+  });
+});
+
+app.post('/submitmessage',restrict,function(req,res){
+   pg.connect(conString, function(err, client) {
+    if(err){
+      console.log(err);
+      res.json({"error":"Unable to connect to database"});
+    } else {
+      var query = "insert into comments(userid,comment,addedat) VALUES('"+req.session.profile.userid+"','"+req.body.message+"','"+Math.round(new Date().getTime()/1000)+"')";
+      client.query(query,function(err, result) {
         if(err){
           console.log(err);
           res.json({"error":"error occured while querying the database"});
