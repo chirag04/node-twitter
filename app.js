@@ -13,7 +13,6 @@ var express = require('express')
 var app = express();
 
 var conString = process.env.DATABASE_URL;
-var DB_NAME = 'dj1i6nklti7cl';
 
 app.configure(function(){
   app.set('port', process.env.PORT || 5000);
@@ -50,14 +49,16 @@ app.get('/',function(req, res){
   } else {
   pg.connect(conString, function(err, client) {
     if(err){
+      console.log(err);
       res.render('home.ejs',{"error" : "Unable to connect to database","comments":null});
     } else {
-      var query = "SELECT * FROM "+DB_NAME+".comments"+
-                    " left join "+DB_NAME+".users on comments.userid = users.userid"+
-                    " left join "+DB_NAME+".followers on comments.userid = followers.userid"+
+      var query = "SELECT * FROM comments"+
+                    " left join users on comments.userid = users.userid"+
+                    " left join followers on comments.userid = followers.userid"+
                     " WHERE followerid ='" + req.session.profile.userid + "'";
       client.query(query, function(err,result){
         if(err){
+          console.log(err);
           res.render('home.ejs',{"error" : "Error occoured while querying the database","comments":null});
         }else {
             for (var i = result.rows.length - 1; i >= 0; i--) {
@@ -82,31 +83,35 @@ app.get('/profile', function(req, res){
 app.get('/profile/:id',function(req, res){
   pg.connect(conString, function(err, client) {
     if(err){
+      console.log(err);
       res.render('profile.ejs',{"error" : "Unable to connect to database"});
     } else {
-      var query = "SELECT * FROM "+DB_NAME+".users where username='" + req.params.id +"'";
+      var query = "SELECT * FROM users where username='" + req.params.id +"'";
       client.query(query, function(err,result){
         if(err){
+          console.log(err);
           res.render('profile.ejs',{"error" : "Error occoured while querying the database"});
         }else {
           if(result.rowCount == 1) {
-            var query = "SELECT * FROM "+DB_NAME+".comments"+
-                    " left join "+DB_NAME+".users on comments.userid = users.userid"+
+            var query = "SELECT * FROM comments"+
+                    " left join users on comments.userid = users.userid"+
                     " WHERE username='" + req.params.id + "'";
             client.query(query, function(err,result){
               if(err){
+                console.log(err);
                 res.render('profile.ejs',{"error" : "Error occoured while querying the database"});
               }else {
                 for (var i = result.rows.length - 1; i >= 0; i--) {
                   result.rows[i].addedat = moment.unix(result.rows[i].addedat).fromNow();
                 }
                 if(req.session.profile && req.session.profile.username != req.params.id){
-                   var query = "SELECT * FROM "+DB_NAME+".followers"+
-                               " left join "+DB_NAME+".users on followers.userid = users.userid"+
+                   var query = "SELECT * FROM followers"+
+                               " left join users on followers.userid = users.userid"+
                                " WHERE followerid='" + req.session.profile.userid + "' AND"+
                                " username = '" + req.params.id + "'";
                     client.query(query, function(err,followersresult){
                       if(err){
+                        console.log(err);
                         res.render('profile.ejs',{"error" : "Error occoured while querying the database"});
                       }else {
                         if(followersresult.rowCount == 1) {
@@ -133,12 +138,14 @@ app.get('/profile/:id',function(req, res){
 app.post('/unfollow',restrict,function(req,res){
    pg.connect(conString, function(err, client) {
     if(err){
+      console.log(err);
       res.json({"error":"Unable to connect to database"});
     } else {
-      var query = "delete from "+DB_NAME+".followers where followerid = '" +req.session.profile.userid+ "' AND " +
-                   "userid = (select userid from "+DB_NAME+".users where username = '" + req.body.username + "')";
+      var query = "delete from followers where followerid = '" +req.session.profile.userid+ "' AND " +
+                   "userid = (select userid from users where username = '" + req.body.username + "')";
       client.query(query, function(err, result) {
         if(err){
+          console.log(err);
           res.json({"error":"error occured while querying the database"});
         } else {
           res.json({"success":"1"});
@@ -151,11 +158,13 @@ app.post('/unfollow',restrict,function(req,res){
 app.post('/follow',restrict,function(req,res){
    pg.connect(conString, function(err, client) {
     if(err){
+      console.log(err);
       res.json({"error":"Unable to connect to database"});
     } else {
-      var query = "insert into "+DB_NAME+".followers select '" + req.session.profile.userid + "',userid from "+DB_NAME+".users where username = '" + req.body.username + "'";
+      var query = "insert into followers select '" + req.session.profile.userid + "',userid from users where username = '" + req.body.username + "'";
       client.query(query, function(err, result) {
         if(err){
+          console.log(err);
           res.json({"error":"error occured while querying the database"});
         } else {
           res.json({"success":"1"});
@@ -194,14 +203,16 @@ app.get('/signup',function(req, res){
 app.post('/login',function(req, res){
   pg.connect(conString, function(err, client) {
     if(err){
+      console.log(err);
       req.session.error = "Unable to connect to database";
       res.redirect('/login');
     } else {
-      var query = "SELECT * FROM "+DB_NAME+".users WHERE " +
+      var query = "SELECT * FROM users WHERE " +
                    "username='" + req.body.username + "' OR "+
                    "email='" + req.body.username + "'";
       client.query(query, function(err, result) {
         if(err){
+          console.log(err);
           req.session.error = "Error occoured while querying the database";
           res.redirect('/login');
         }else {
@@ -236,10 +247,11 @@ app.post('/login',function(req, res){
 app.post('/signup',function(req, res){
   pg.connect(conString, function(err, client) {
     if(err){
+      console.log(err);
       req.session.error = "Unable to connect to database";
       res.redirect('/signup');
     } else {
-      var query = "SELECT * FROM "+DB_NAME+".users WHERE " +
+      var query = "SELECT * FROM users WHERE " +
                    "username='" + req.body.username + "' OR "+ 
                    "email='" + req.body.email + "'";
       client.query(query, function(err, result) {
@@ -257,9 +269,10 @@ app.post('/signup',function(req, res){
                 req.session.error = "Error occoured while hashing";
                 res.redirect('/signup');
               } else {
-                var query = "INSERT INTO "+DB_NAME+".users(username,password,salt,email) VALUES($1,$2,$3,$4) RETURNING userid";
+                var query = "INSERT INTO users(username,password,salt,email) VALUES($1,$2,$3,$4) RETURNING userid";
                 client.query(query,[req.body.username,hash,salt,req.body.email],function(err,result){
                   if(err){
+                    console.log(err);
                     req.session.error = "Error occoured while querying the database";
                     res.redirect('/signup');
                   }else {
