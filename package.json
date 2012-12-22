@@ -9,8 +9,11 @@
     "express": "*",
     "ejs": "*",
     "pg":"*",
-    "connect-redis":"*",
     "pwd":"*",
     "moment":"*"
+  },
+  "engines": {
+    "node": "0.8.x",
+    "npm": "1.1.x"
   }
 }
