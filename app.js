@@ -12,7 +12,7 @@ var express = require('express')
 
 var app = express();
 
-var conString = "tcp://chirag:chirag@localhost/metisme";
+var conString = process.env.DATABASE_URL;
 
 app.configure(function(){
   app.set('port', process.env.PORT || 5000);
