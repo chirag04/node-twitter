@@ -13,7 +13,6 @@ var express = require('express')
 var app = express();
 
 var conString = process.env.DATABASE_URL;
-console.log("--------->"+conString);
 
 app.configure(function(){
   app.set('port', process.env.PORT || 5000);
@@ -37,6 +36,10 @@ app.configure(function(){
 });
 
 app.configure('development', function(){
+  app.use(express.errorHandler());
+});
+
+app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
@@ -240,6 +243,7 @@ app.post('/signup',function(req, res){
                    "email='" + req.body.email + "'";
       client.query(query, function(err, result) {
         if(err){
+          console.log(err);
           req.session.error = "Error occoured while querying the database";
           res.redirect('/signup');
         }else {
