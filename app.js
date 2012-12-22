@@ -10,8 +10,6 @@ var express = require('express')
   , path = require('path')
   , moment = require('moment');
 
-var RedisStore = require('connect-redis')(express);
-
 var app = express();
 
 var conString = "tcp://chirag:chirag@localhost/metisme";
@@ -24,7 +22,7 @@ app.configure(function(){
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.cookieParser('sta'));
-  app.use(express.session({ store: new RedisStore }));
+  app.use(express.session());
   app.use(express.methodOverride());
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(function(req, res, next){
