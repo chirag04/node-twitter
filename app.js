@@ -13,6 +13,7 @@ var express = require('express')
 var app = express();
 
 var conString = process.env.DATABASE_URL;
+console.log("--------->"+conString);
 
 app.configure(function(){
   app.set('port', process.env.PORT || 5000);
