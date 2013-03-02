@@ -1,3 +1,5 @@
+Demo: http://shielded-crag-4027.herokuapp.com/people
+
 Node-twitter is a twitter like site with features like built using node.js, expressjs, redis, postgres.
 
 This was built in 2hrs as a part of technical test for metisme(Email attachement app)
